@@ -1,3 +1,18 @@
-from django.shortcuts import render
+from rest_framework import generics
+from .models import CSVdata
+from .serializers import ResultSerializer
 
-# Create your views here.
+
+class StartCalc:
+    pass
+
+
+class CountInWork:
+    pass
+
+
+class GetResult:
+    pass
+
+
+
