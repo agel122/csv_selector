@@ -23,3 +23,57 @@ https://realpython.com/asynchronous-tasks-with-django-and-celery/
 https://code.tutsplus.com/ru/tutorials/using-celery-with-django-for-background-task-processing--cms-28732
 https://github.com/jessamynsmith/django-celery-example
 https://webdevblog.ru/asinhronnye-zadachi-v-django-s-redis-i-celery/
+
+
+1) Установить Redis
+Install the redis package.(AUR)
+Start/enable redis.service. 
+-> sudo systemctl enable --now redis
+Accept connections on the specified port (default is 6379)
+/etc/redis/redis.conf
+
+-> redis-server
+-> redis-cli ping (reply should be PONG)
+
+установить redis in venv (pip install.... or in pycharp)
+
+2) установить celery in venv.
+
+3) to setting.py:
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Nairobi'
+
+4) там, где settings.py:
+celery.py:
+import os
+from celery import Celery
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'datacheck.settings')
+celery_app = Celery('datacheck')
+celery_app.config_from_object('django.conf:settings', namespace='CELERY')
+celery_app.autodiscover_tasks()
+
+5) там, где само приложение:
+tasks.py:
+from celery import shared_task
+
+
+@shared_task
+def adding_task(x, y):
+    return x + y
+    
+6) запускаем в отдельном терминале редис. в терминале с венв запускаем воркер:
+celery -A datacheck worker -l INFO
+в еще одном терминале с венв делаем:
+ python manage.py shell
+ from csvreader.tasks import adding_task
+ task = adding_task.delay(2, 5)
+print(f"id={task.id}, state={task.state}, status={task.status}") 
+ task.get()
+должно вывести 7, если все работает (редис + воркер)
+
+
+
