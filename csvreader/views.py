@@ -48,13 +48,13 @@ class GetResult(APIView):
 
 
 class AddResult(APIView):
-    def post(self, request):
+    def put(self, request):
         file_data = self.request.data
         file_required = set_file_dir(file_data["filename"])
         file_dataresult = csvsumm(file_required, 9)
-        item_to_update = CSVdata.objects.get(file_data["filename"])
+        item_to_update = CSVdata.objects.get(filename=file_data["filename"])
         item_to_update.dataresult = file_dataresult
-        item_to_update.save(['dataresult'])
-        serializer = ResultSerializer(item_to_update)
-        return Response(serializer.data)
-
+        item_to_update.status = 'done'
+        item_to_update.save()
+        return JsonResponse({'status': f'{file_data["filename"]} updated',
+                             'value added': file_dataresult})
