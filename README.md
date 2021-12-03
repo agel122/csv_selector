@@ -7,7 +7,7 @@ There are several rest api endpoints, implemented via django rest framework by f
 2) http://127.0.0.1:8000/api/ongoing - GET will show "on-going" tasks like:<br />
           {"tasks in work": 0}<br />
 3) http://127.0.0.1:8000/api/getresult?filename=data - GET will show record in database like:<br />
-          {"id": 2, "filename": "data7.csv", "dataresult": "89.2416354295115000", "status": "done"}<br />
+          {"id": 2, "filename": "data.csv", "dataresult": "89.2416354295115000", "status": "done"}<br />
 
 All data-files are placed in FILES derectory (i didn't specify it via Django settings as static files directory).<br />
 
